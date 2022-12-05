@@ -1,4 +1,4 @@
-# Code copied from Stack Overflow
+# Source: https://stackoverflow.com/questions/53509117/python-key-press-simulate-interfere-with-system-keystrokes
 
 import ctypes
 import time
@@ -65,6 +65,7 @@ def ReleaseKey(hexKeyCode):
 # directX direct input keyboard scan codes
 
 if __name__ == '__main__':
+    print('testing...')
     time.sleep(5)
     for i in range(10):
         time.sleep(0.370)

@@ -1,17 +1,20 @@
 # @Description: Heros of the Storm - Tracer Technology - Level 7 Talent 3 Auto Reload
 # @Author:      PetrelPine [https://github.com/PetrelPine]
 
-import win32gui, win32ui, win32con
-from ctypes import windll
-from PIL import Image
 import time
-import key  # my own module
-# import winsound
-# import numpy
+
 # import cv2
+# import numpy
+import win32con
+import win32gui
+import win32ui
+from PIL import Image
+
+import key
+
 
 # 获取后台窗口的句柄，注意后台窗口不能最小化
-hWnd = win32gui.FindWindow("Heroes of the Storm", None)  # 窗口的类名可以用Visual Studio的SPY++工具获取
+hWnd = win32gui.FindWindow('Heroes of the Storm', None)  # 窗口的类名可以用Visual Studio的SPY++工具获取
 # 获取句柄窗口的大小信息
 left, top, right, bot = win32gui.GetWindowRect(hWnd)
 width = int((right - left) * 1.25)  # 需要x1.25，因为windows启用了125%的缩放
@@ -25,7 +28,7 @@ height = int((bot - top) * 1.25)  # 需要x1.25，因为windows启用了125%的�
 # 保存图像
 # 方法一：windows api 保存
 # 保存bitmap到文件
-# saveBitMap.SaveBitmapFile(saveDC, "scr\\img_Winapi.bmp")
+# saveBitMap.SaveBitmapFile(saveDC, 'resource\\img_Winapi.bmp')
 #
 # 方法二(第一部分)：PIL保存
 # 获取位图信息
@@ -35,7 +38,7 @@ height = int((bot - top) * 1.25)  # 需要x1.25，因为windows启用了125%的�
 # img_PIL = Image.frombuffer('RGB', (bmp_info['bmWidth'], bmp_info['bmHeight']), bmp_str, 'raw', 'BGRX', 0, 1)
 # 方法二（第二部分）：PIL保存
 # PrintWindow成功，保存到文件，显示到屏幕
-# img_PIL.save("scr\\img_PIL.png")  # 保存
+# img_PIL.save('resource\\img_PIL.png')  # 保存
 # img_PIL.show()  # 显示
 #
 # 方法三（第一部分）：opencv + numpy保存
@@ -46,9 +49,9 @@ height = int((bot - top) * 1.25)  # 需要x1.25，因为windows启用了125%的�
 # im_opencv = numpy.frombuffer(signedIntsArray, dtype='uint8')
 # im_opencv.shape = (height, width, 4)
 # cv2.cvtColor(im_opencv, cv2.COLOR_BGRA2RGB)
-# cv2.imwrite("im_opencv.jpg", im_opencv, [int(cv2.IMWRITE_JPEG_QUALITY), 100])  # 保存
+# cv2.imwrite('resource\\im_opencv.jpg', im_opencv, [int(cv2.IMWRITE_JPEG_QUALITY), 100])  # 保存
 # cv2.namedWindow('im_opencv')  # 命名窗口
-# cv2.imshow("im_opencv", im_opencv)  # 显示
+# cv2.imshow('im_opencv', im_opencv)  # 显示
 # cv2.waitKey(0)
 # cv2.destroyAllWindows()
 #
@@ -60,7 +63,7 @@ height = int((bot - top) * 1.25)  # 需要x1.25，因为windows启用了125%的�
 
 
 # 检查当前状态是否需要按下D键
-def check_status():
+def check_status() -> bool:
     rely = 0  # 可信度
 
     # 右下D键位置
@@ -100,15 +103,13 @@ def check_status():
     if rely >= 5:
         # load time = 0.750 s
         time.sleep(0.350)
-        return 1  # 需要按下D
+        return True  # 需要按下D
     else:
-        return 0  # 不需要按下D
+        return False  # 不需要按下D
 
 
 # main loop
-print('Start in 5 seconds.')
-time.sleep(5)
-for _ in range(20000):
+while True:
     # 返回句柄窗口的设备环境，覆盖整个窗口，包括非客户区，标题栏，菜单，边框
     hWndDC = win32gui.GetWindowDC(hWnd)
     # 创建设备描述表
@@ -136,13 +137,12 @@ for _ in range(20000):
     mfcDC.DeleteDC()
     win32gui.ReleaseDC(hWnd, hWndDC)
 
-    if check_status() == 1:
+    if check_status():
+        # print('D Matched')
         key.PressKey(0x20)
         time.sleep(0.025)
         key.ReleaseKey(0x20)
-        print('D Confirm!')
-        # winsound.Beep(500, 300)
         time.sleep(1.250)  # atk time = 1.250 s
     else:
-        print('Not Confirm!')
-        time.sleep(0.175)
+        # print('D Not Matched')
+        time.sleep(0.150)
